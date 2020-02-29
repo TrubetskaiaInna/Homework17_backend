@@ -28,4 +28,16 @@ router.post('/users', jsonParser, (request, response) => {
   }
 })
 
+router.delete('/users/:id', (request, response) => {
+  const idUser = request.params.id
+  let fileContent = JSON.parse(fs.readFileSync('./app/user/users.json', 'utf8'))
+  fileContent.forEach((users, index) => {
+    if (users.id === Number(idUser)) {
+      fileContent.splice(index, 1)
+    }
+  })
+  fs.writeFileSync('./app/user/users.json', JSON.stringify(fileContent))
+  response.sendStatus(200)
+})
+
 module.exports = router
