@@ -36,6 +36,15 @@ router.delete('/users/:id', (request, response) => {
     }
   })
   fs.writeFileSync('./app/user/users.json', JSON.stringify(fileContent))
+  const posts = JSON.parse(fs.readFileSync('./app/post/post.json', 'utf8'))
+  for (let i = posts.length - 1; i >= 0; i--) {
+    posts.forEach((post, index) => {
+      if (post.userId === Number(idUser)) {
+        posts.splice(index, 1)
+      }
+    })
+  }
+  fs.writeFileSync('./app/post/post.json', JSON.stringify(posts))
   response.sendStatus(200)
 })
 
@@ -43,7 +52,7 @@ router.put('/users/:id', jsonParser, (request, response) => {
   const idUser = request.params.id
   const user = request.body
   const fileContent = JSON.parse(fs.readFileSync('./app/user/users.json', 'utf8'))
-  fileContent.forEach((users, index) => {
+  fileContent.forEach((users) => {
     if (users.id === Number(idUser)) {
       users.email = user.email
     }
